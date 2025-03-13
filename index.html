@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parking App</title>
+    <style>
+        .spot {
+            display: inline-block;
+            margin: 10px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            text-align: center;
+        }
+        .free { color: green; }
+        .occupied { color: red; }
+    </style>
+</head>
+<body>
+    <h1>Estado del Estacionamiento</h1>
+    <div id="spots"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.5.4/socket.io.js"></script>
+    <script>
+        const socket = io();
+
+        // Escuchar actualizaciones del backend
+        socket.on('update_status', function(data) {
+            const spotsDiv = document.getElementById('spots');
+            spotsDiv.innerHTML = '';  // Limpiar el contenido anterior
+
+            for (const [spot_id, status] of Object.entries(data)) {
+                const spotDiv = document.createElement('div');
+                spotDiv.className = `spot ${status === 'Libre' ? 'free' : 'occupied'}`;
+                spotDiv.textContent = `Espacio ${spot_id}: ${status}`;
+                spotsDiv.appendChild(spotDiv);
+            }
+        });
+    </script>
+</body>
+</html>
